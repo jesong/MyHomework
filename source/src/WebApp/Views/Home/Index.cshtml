@@ -2,4 +2,12 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div>Hello MyHomework</div>
+@if (User.Identity.IsAuthenticated)
+{
+    <div>Hello @User.Identity.Name</div>
+}
+else
+{
+    <div>Welcome to MyHomework!</div>
+    <a asp-area="" asp-controller="Account" asp-action="Login">Login With WeChat</a>
+}
