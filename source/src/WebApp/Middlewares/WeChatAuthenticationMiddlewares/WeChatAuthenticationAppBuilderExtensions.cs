@@ -1,6 +1,7 @@
 ﻿namespace MyHomework.WebApp.Middlewares.WeChatAuthenticationMiddlewares
 {
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.Extensions.Options;
     using System;
 
     public static class WeChatAuthenticationAppBuilderExtensions
@@ -17,7 +18,8 @@
             {
                 configureOptions(options);
             }
-            return app.UseMiddleware<WeChatAuthenticationMiddleware>(options);
+
+            return app.UseMiddleware<WeChatAuthenticationMiddleware>(Options.Create(options));
         }
     }
 }

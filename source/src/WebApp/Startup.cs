@@ -68,6 +68,8 @@
             // Track data about exceptions from the application. Should be configured after all error handling middleware in the request pipeline.
             app.UseApplicationInsightsExceptionTelemetry();
 
+            app.UseMiddleware<HttpsRedirectionMiddleware>();
+
             app.UseCustomAuthentication(options);
 
             app.UseStaticFiles();

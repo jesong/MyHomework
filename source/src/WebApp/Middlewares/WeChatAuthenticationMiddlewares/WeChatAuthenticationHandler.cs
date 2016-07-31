@@ -11,11 +11,8 @@
     using System.Security.Claims;
     using System.Threading.Tasks;
 
-    public class WeChatAuthenticationHandler : AuthenticationHandler<WeChatAuthenticationOptions>
+    public class WeChatAuthenticationHandler : RemoteAuthenticationHandler<WeChatAuthenticationOptions>
     {
-        private static readonly string WeChatInternalAuthEndPoint = "https://open.weixin.qq.com/connect/oauth2/authorize";
-        private static readonly string WeChatMemberAuthEndPoint = "https://qy.weixin.qq.com/cgi-bin/loginpage";
-
         private readonly WeChatApi weChatApi;
 
         public WeChatAuthenticationHandler(WeChatApi weChatApi)
@@ -23,7 +20,7 @@
             this.weChatApi = weChatApi;
         }
 
-        protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
+        protected override async Task<AuthenticateResult> HandleRemoteAuthenticateAsync()
         {
             try
             {
@@ -62,7 +59,7 @@
                 claimsIdentity.AddClaim(new Claim(WeChatAuthenticationDefaults.ClaimType_Avatar, userInfo.Avatar, ClaimValueTypes.String, WeChatAuthenticationDefaults.ClaimIssuer));
 
                 string departments = string.Empty;
-                foreach(var department in userInfo.DepartmentIds)
+                foreach (var department in userInfo.DepartmentIds)
                 {
                     departments += string.Format("{0},", department);
                 }
@@ -80,7 +77,7 @@
 
                 return AuthenticateResult.Success(authenticationTicket);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return AuthenticateResult.Fail(e);
             }
@@ -99,14 +96,17 @@
                 properties.RedirectUri = CurrentUri;
             }
 
-            var redirectUri = BuildRedirectUri(properties.RedirectUri);
+            var queryBuilder = new QueryBuilder()
+            {
+                {"redirect_uri", properties.RedirectUri }
+            };
+
+            var redirectUri = BuildRedirectUri(Options.CallbackPath + queryBuilder.ToString());
 
             var authorizationEndpoint = BuildChallengeUrl(redirectUri);
             Response.Redirect(authorizationEndpoint);
             return Task.FromResult(true);
         }
-
-
 
         private string BuildChallengeUrl(string redirectUrl)
         {
@@ -114,13 +114,13 @@
             {
                 var queryBuilder = new QueryBuilder()
                 {
-                    { "appId", Options.CorpId},
+                    { "appid", Options.CorpId},
                     { "redirect_uri", redirectUrl},
                     { "response_type", "code" },
-                    { "scope", "snsapi_base" },
+                    { "scope", string.Join(" ", Options.Scope) },
                  };
 
-                return WeChatInternalAuthEndPoint + queryBuilder.ToString() + "#wechat_redirect";
+                return WeChatAuthenticationDefaults.WeChatInternalAuthEndPoint + queryBuilder.ToString() + "#wechat_redirect";
             }
             else
             {
@@ -130,7 +130,7 @@
                     { "redirect_uri", redirectUrl},
                  };
 
-                return WeChatMemberAuthEndPoint + queryBuilder.ToString();
+                return WeChatAuthenticationDefaults.WeChatMemberAuthEndPoint + queryBuilder.ToString();
 
             }
         }
