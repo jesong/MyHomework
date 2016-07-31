@@ -18,7 +18,6 @@
             AutomaticChallenge = true;
             DisplayName = WeChatAuthenticationDefaults.Caption;
             CallbackPath = new PathString("/signin-wechat");
-            //Events = new OpenIdConnectEvents();
             Scope.Add("snsapi_base");
         }
 

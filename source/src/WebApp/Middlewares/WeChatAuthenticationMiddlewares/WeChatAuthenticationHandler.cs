@@ -35,7 +35,8 @@
                     }
                     else
                     {
-                        return AuthenticateResult.Fail("invalid code");
+                        string message = "invalid code";
+                        return AuthenticateResult.Fail(message);
                     }
                 }
                 else
@@ -47,7 +48,8 @@
                     }
                     else
                     {
-                        return AuthenticateResult.Fail("invalid code");
+                        string message = "invalid code";
+                        return AuthenticateResult.Fail(message);
                     }
                 }
 
@@ -131,9 +133,7 @@
                  };
 
                 return WeChatAuthenticationDefaults.WeChatMemberAuthEndPoint + queryBuilder.ToString();
-
             }
         }
-
     }
 }
