@@ -1,20 +1,8 @@
 ﻿@using MyHomework.WebApp.Models
 @model HomeViewModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Welcome";
 }
 
-@if (User.Identity.IsAuthenticated)
-{
-    <div>Hello @User.Identity.Name</div>
-
-    @if (!Model.IsInWeChatBrowser)
-    {
-        <a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
-    }
-}
-else
-{
-    <div>Welcome to MyHomework!</div>
-    <a asp-area="" asp-controller="Account" asp-action="Login">Login With WeChat</a>
-}
+<div>Welcome to MyHomework!</div>
+<a asp-area="" asp-controller="Account" asp-action="Login">Login With WeChat</a>

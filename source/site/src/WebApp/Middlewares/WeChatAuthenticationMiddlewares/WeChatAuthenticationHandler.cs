@@ -25,6 +25,7 @@
             try
             {
                 UserInfo userInfo;
+                UserType userType = UserType.Member;
                 if (WeChatUtilities.IsWeChatInternalBrowser(Request))
                 {
                     StringValues code;
@@ -45,6 +46,7 @@
                     if (Request.Query.TryGetValue("auth_code", out authCode))
                     {
                         userInfo = await this.weChatApi.GetLoginUserInfoByAuthCode(authCode);
+                        userType = (userInfo as LoginUserInfo).UserType;
                     }
                     else
                     {
@@ -54,6 +56,9 @@
                 }
 
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(WeChatAuthenticationDefaults.AuthenticationType);
+
+                claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, userType.ToString(), ClaimValueTypes.String, WeChatAuthenticationDefaults.ClaimIssuer));
+
                 claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, userInfo.UserId, ClaimValueTypes.String, WeChatAuthenticationDefaults.ClaimIssuer));
 
                 claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, userInfo.UserName, ClaimValueTypes.String, WeChatAuthenticationDefaults.ClaimIssuer));
@@ -106,6 +111,7 @@
             var redirectUri = BuildRedirectUri(Options.CallbackPath + queryBuilder.ToString());
 
             var authorizationEndpoint = BuildChallengeUrl(redirectUri);
+            Response.Headers.Add("Referer", Request.Host.Value);
             Response.Redirect(authorizationEndpoint);
             return Task.FromResult(true);
         }

@@ -96,7 +96,7 @@
             return user["UserId"].Value<string>();
         }
 
-        public async Task<UserInfo> GetUserInfoByUserId(string userId)
+        public async Task<UserInfo> GetUserInfoByUserId(string userId, UserInfo userInfo = null)
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
@@ -115,32 +115,36 @@
             }
 
             var responseString = await response.Content.ReadAsStringAsync();
-            var userInfo = JObject.Parse(responseString);
+            var jUserInfo = JObject.Parse(responseString);
 
-            if (userInfo["errcode"] == null ||
-                userInfo["errcode"].Value<int>() != 0 ||
-                userInfo["userid"] == null ||
-                string.IsNullOrWhiteSpace(userInfo["userid"].Value<string>()) ||
-                userInfo["name"] == null ||
-                string.IsNullOrWhiteSpace(userInfo["name"].Value<string>()) ||
-                userInfo["status"] == null ||
-                string.IsNullOrWhiteSpace(userInfo["status"].Value<string>()))
+            if (jUserInfo["errcode"] == null ||
+                jUserInfo["errcode"].Value<int>() != 0 ||
+                jUserInfo["userid"] == null ||
+                string.IsNullOrWhiteSpace(jUserInfo["userid"].Value<string>()) ||
+                jUserInfo["name"] == null ||
+                string.IsNullOrWhiteSpace(jUserInfo["name"].Value<string>()) ||
+                jUserInfo["status"] == null ||
+                string.IsNullOrWhiteSpace(jUserInfo["status"].Value<string>()))
             {
                 throw new Exception("Wechat server error in GetUserInfoByUserId:" + responseString);
             }
 
-            var departmentArray = userInfo["department"].Value<JArray>();
-            return new UserInfo()
+            var departmentArray = jUserInfo["department"].Value<JArray>();
+            if (userInfo == null)
             {
-                UserId = userInfo["userid"].Value<string>(),
-                UserName = userInfo["name"].Value<string>(),
-                Avatar = userInfo["avatar"] == null ? string.Empty : userInfo["avatar"].Value<string>(),
-                Status = (UserStatus)userInfo["status"].Value<int>(),
-                DepartmentIds = departmentArray.Select(o => (int)o).ToArray()
-            };
+                userInfo = new UserInfo();
+            }
+
+            userInfo.UserId = jUserInfo["userid"].Value<string>();
+            userInfo.UserName = jUserInfo["name"].Value<string>();
+            userInfo.Avatar = jUserInfo["avatar"] == null ? string.Empty : jUserInfo["avatar"].Value<string>();
+            userInfo.Status = (UserStatus)jUserInfo["status"].Value<int>();
+            userInfo.DepartmentIds = departmentArray.Select(o => (int)o).ToArray();
+
+            return userInfo;
         }
 
-        public async Task<UserInfo> GetLoginUserInfoByAuthCode(string authCode)
+        public async Task<LoginUserInfo> GetLoginUserInfoByAuthCode(string authCode)
         {
             if (string.IsNullOrWhiteSpace(authCode))
             {
@@ -163,15 +167,23 @@
             }
 
             var responseString = await response.Content.ReadAsStringAsync();
-            var userInfo = JObject.Parse(responseString);
+            var jUserInfo = JObject.Parse(responseString);
 
-            if(userInfo["user_info"] == null ||
-                userInfo["user_info"].Value<JToken>() == null)
+            if(jUserInfo["usertype"] == null ||
+                string.IsNullOrEmpty(jUserInfo["usertype"].Value<string>()))
             {
                 throw new Exception("Wechat server error in GetLoginUserInfoByAuthCode:" + responseString);
             }
 
-            var userInfoDetail = userInfo["user_info"].Value<JToken>();
+            var userType = (UserType)(jUserInfo["usertype"].Value<int>());
+
+            if (jUserInfo["user_info"] == null ||
+                jUserInfo["user_info"].Value<JToken>() == null)
+            {
+                throw new Exception("Wechat server error in GetLoginUserInfoByAuthCode:" + responseString);
+            }
+
+            var userInfoDetail = jUserInfo["user_info"].Value<JToken>();
             if (userInfoDetail["userid"] == null ||
                 string.IsNullOrWhiteSpace(userInfoDetail["userid"].Value<string>()))
             {
@@ -180,7 +192,9 @@
 
             var userId = userInfoDetail["userid"].Value<string>();
 
-            return await this.GetUserInfoByUserId(userId);
+            return (LoginUserInfo)(await this.GetUserInfoByUserId(userId, new LoginUserInfo() {
+                UserType = userType
+            }));
         }
         #endregion UserInfo
 

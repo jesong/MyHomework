@@ -43,6 +43,10 @@
             services.AddSingleton(typeof(WeChatApi));
             // Add framework services.
             services.AddMvc();
+            
+            var sp = services.BuildServiceProvider();
+            var options = sp.GetService<IOptions<AppOptions>>();
+            services.UseCustomAuthorization(options);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

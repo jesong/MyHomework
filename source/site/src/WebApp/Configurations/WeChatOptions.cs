@@ -5,5 +5,7 @@
         public string CorpId { get; set; }
 
         public string CorpSecret { get; set; }
+
+        public string HomeworkPublisherDepartmentId { get; set; }
     }
 }

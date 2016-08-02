@@ -1,11 +1,13 @@
 ﻿namespace MyHomework.WebApp.Controllers
 {
     using Microsoft.AspNetCore.Authentication.Cookies;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http.Authentication;
     using Microsoft.AspNetCore.Mvc;
     using Middlewares.WeChatAuthenticationMiddlewares;
     using System.Threading.Tasks;
 
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         [HttpGet]
