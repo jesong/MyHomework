@@ -23,6 +23,7 @@
             if(env.IsDevelopment())
             {
                 builder.AddApplicationInsightsSettings(developerMode: true);
+                builder.AddUserSecrets();
             }
 
             Configuration = builder.Build();
