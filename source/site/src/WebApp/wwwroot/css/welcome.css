@@ -1,0 +1,33 @@
+﻿body {
+    font-size: 12px;
+    font-family: 'Microsoft YaHei UI','Microsoft YaHei','SimSun','Segoe UI','Lucida Grande',Verdana,Arial,Helvetica,sans-serif!important;
+    font-weight: 300;
+}
+
+h1 {
+    font-size: 4em;
+}
+
+a, a:visited {
+    text-decoration: none;
+    color: #00749e;
+}
+
+a:hover {
+    color:#0095c4;
+}
+.content {
+    display: block;
+    width: 100%;
+}
+
+.title {
+    display: table;
+    margin: 0 auto 0;
+}
+
+.login{
+    display: table;
+    margin: 0 auto 0;
+    font-size: 2em;
+}

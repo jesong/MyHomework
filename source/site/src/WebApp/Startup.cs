@@ -1,8 +1,10 @@
 ﻿namespace MyHomework.WebApp
 {
     using Configurations;
+    using DatabaseModels;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
@@ -39,14 +41,18 @@
 
             services.AddOptions();
             services.Configure<AppOptions>(Configuration.GetSection("AppOptions"));
+            services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
 
             services.AddSingleton(typeof(WeChatApi));
             // Add framework services.
             services.AddMvc();
             
             var sp = services.BuildServiceProvider();
-            var options = sp.GetService<IOptions<AppOptions>>();
-            services.UseCustomAuthorization(options);
+            var appOptions = sp.GetService<IOptions<AppOptions>>();
+            var connectionStrings = sp.GetService<IOptions<ConnectionStrings>>();
+            services.UseCustomAuthorization(appOptions);
+
+            services.AddDbContext<MyHomeworkDBContext>(options => options.UseSqlServer(connectionStrings.Value.MyHomeworkDatabase));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

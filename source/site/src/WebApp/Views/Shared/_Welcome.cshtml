@@ -3,22 +3,15 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MyHomework</title>
+    <title>Welcome to MyHomework</title>
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
-    <div id="header">
-        <div id="header-banner">
-            <div>MyHomework!</div>
-            <div>@Html.Partial("SignIn")</div>
-        </div>
-    </div>
     <div>
         @RenderBody()
     </div>
-    <div id="footer">
 
-    </div>
     @RenderSection("scripts", required: false)
+    @RenderSection("css", required: false)
 </body>
 </html>
