@@ -15,7 +15,7 @@
         {
             app.UseCookieAuthentication(new CookieAuthenticationOptions()
             {
-                LoginPath = new PathString("/account/login"),
+                LoginPath = new PathString("/account/welcome"),
                 LogoutPath = new PathString("/account/logout"),
                 AccessDeniedPath = new PathString("/account/register"),
                 ReturnUrlParameter = "returnUrl",

@@ -1,0 +1,8 @@
+﻿@using MyHomework.WebApp.Models
+@model WelcomeViewModel
+@{
+    ViewData["Title"] = "Welcome";
+}
+
+<div>Welcome to MyHomework!</div>
+<a asp-area="" asp-controller="Account" asp-action="Login" id="returnurl" value="@Model.ReturnUrl" >Login With WeChat</a>
