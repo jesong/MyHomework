@@ -1,10 +1,4 @@
-﻿body {
-    font-size: 12px;
-    font-family: 'Microsoft YaHei UI','Microsoft YaHei','SimSun','Segoe UI','Lucida Grande',Verdana,Arial,Helvetica,sans-serif!important;
-    font-weight: 300;
-}
-
-h1 {
+﻿h1 {
     font-size: 4em;
 }
 
@@ -16,14 +10,15 @@ a, a:visited {
 a:hover {
     color:#0095c4;
 }
-.content {
-    display: block;
-    width: 100%;
+
+#content {
+    margin-left:10px;
+    margin-right:10px;
 }
 
 .title {
     display: table;
-    margin: 0 auto 0;
+    margin: 20px auto 0;
 }
 
 .login{

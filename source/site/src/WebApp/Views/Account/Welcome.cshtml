@@ -4,14 +4,9 @@
     Layout = "_Welcome";
 }
 
-@section css{
-    <link rel="stylesheet" href="~/css/welcome.css" />
-}
-<div class="content">
-    <div class="title">
-        <h1>欢迎来到MyHomework!</h1>
-    </div>
-    <div class="login">
-        <a asp-area="" asp-controller="Account" asp-action="Login" id="returnurl" value="@Model.ReturnUrl">请点击这里使用微信扫码登陆</a>
-    </div>
+<div class="title">
+    <h1>欢迎来到MyHomework!</h1>
+</div>
+<div class="login">
+    <a asp-area="" asp-controller="Account" asp-action="Login" id="returnurl" value="@Model.ReturnUrl">点击这里使用微信扫码登陆</a>
 </div>

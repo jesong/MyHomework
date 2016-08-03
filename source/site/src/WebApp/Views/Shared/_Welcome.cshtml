@@ -3,12 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Welcome to MyHomework</title>
+    <title>欢迎来到MyHomework!</title>
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/welcome.css" />
 </head>
 <body>
     <div>
-        @RenderBody()
+        @Html.Partial("Header")
+    </div>
+    <div id="body">
+        <div id="content">
+            @RenderBody()
+        </div>
     </div>
 
     @RenderSection("scripts", required: false)

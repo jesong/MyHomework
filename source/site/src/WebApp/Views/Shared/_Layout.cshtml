@@ -5,20 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MyHomework</title>
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/Layout.css" />
 </head>
 <body>
-    <div id="header">
-        <div id="header-banner">
-            <div>MyHomework!</div>
-            <div>@Html.Partial("SignIn")</div>
-        </div>
-    </div>
     <div>
-        @RenderBody()
+        @Html.Partial("Header")
+    </div>
+    <div id="body">
+        <div id="left-navigation">
+            <ul>
+                <li>
+                    <a href="#">查看消息</a>
+                </li>
+                <li>
+                    <a href="#">提交作业 🔧</a>
+                </li>
+            </ul>
+        </div>
+        <div id="content">@RenderBody()</div>
     </div>
     <div id="footer">
 
     </div>
     @RenderSection("scripts", required: false)
+    @RenderSection("css", required: false)
 </body>
 </html>

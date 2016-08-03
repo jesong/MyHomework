@@ -1,0 +1,30 @@
+﻿#header {
+    line-height: 50px;
+    background-color: black;
+    color: white;
+    font-size: 1.5em;
+}
+
+#header a, a:visited {
+    color: white;
+    text-decoration: none;
+}
+
+#header a:hover {
+    color: #CCC
+}
+
+#header #header-banner {
+    max-width: 1200px;
+    margin: 0 auto 0;
+}
+
+#header #header-banner #header-left {
+    float: left;
+    margin-left: 10px;
+}
+
+#header #header-banner #header-right {
+    float: right;
+    margin-right: 10px;
+}
