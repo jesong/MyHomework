@@ -7,7 +7,8 @@
     using Models;
     using System.Linq;
 
-    [Authorize(Policy = Globals.AuthorizePolicyMember)]
+    [AllowAnonymous]
+    //[Authorize(Policy = Globals.AuthorizePolicyMember)]
     public class HomeworkPublishController : Controller
     {
         private MyHomeworkDBContext myHomeworkDBContext;

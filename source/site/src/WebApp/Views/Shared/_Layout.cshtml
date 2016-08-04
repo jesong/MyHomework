@@ -6,6 +6,10 @@
     <title>@ViewData["Title"] - MyHomework</title>
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/Layout.css" />
+    <script src="~/js/react/react.min.js"></script>
+    <script src="~/js/react/react-dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.0.min.js"></script>
 </head>
 <body>
     <div>
@@ -15,7 +19,7 @@
         <div id="left-navigation">
             <ul>
                 <li>
-                    <a href="#">查看消息</a>
+                    <a asp-area="" asp-controller="HomeworkPublish" asp-action="Index">查看消息</a>
                 </li>
                 <li>
                     <a href="#">提交作业 🔧</a>
