@@ -1,4 +1,5 @@
 ﻿var Dialog = React.createClass({
+    displayName: 'dialog',
     getInitialState: function() {
         return {
             visible: false
@@ -24,6 +25,75 @@
                     </div>
                 </div>
             </div>
+        );
+    }
+});
+
+var File = React.createClass({
+    displayName: 'File',
+    render: function () {
+        return (
+            <div className="file-wrapper">
+                <a className="file-name" href={this.props.fileLink}>{this.props.fileName}</a>
+                <a className="remove-file-button" href="javascript:void(0)">
+                    <span className="remove-file-icon"></span>
+                </a>
+            </div>
+        );
+    }
+});
+
+var FileUploader = React.createClass({
+    displayName: 'FileUploader',
+    getInitialState: function () {
+        return {
+            data: []
+        }
+    },
+    onUploadFile: function(e) {
+        if (this.refs.file.files.length == 1) {
+            var currentfiles = this.state.data;
+
+            var file = this.refs.file.files[0];
+            currentfiles.push({
+                name: file.name,
+                link: file.name
+            })
+
+            this.setState({ data: currentfiles });
+        }
+    },
+    render: function () {
+        var files = this.state.data.map(function(file) {
+            return (
+                <File fileLink={file.link} fileName={file.name} />
+            );
+        });
+        return (
+            <div className="file-uploader-wrap">
+                {files}
+                <div className="file-uploader">
+                    <label htmlFor="file-upload-control" className="file-uploader-custom-file-upload">
+                        点这里上传文件
+                    </label>
+                    <input id="file-upload-control" ref="file" type="file" name="uploadFile" className="file-uploader-choose-file" onChange={this.onUploadFile} />
+                </div>
+            </div>
+        );
+    }
+});
+
+var MessagePublisher = React.createClass({
+    displayName: 'MessagePublisher',
+    render: function () {
+        return (
+            <form className="message-publisher-form">
+                <input className="message-publisher-title" placeholder="标题" />
+                <textarea className="message-publisher-content" placeholder="内容" rows="10"/>
+                <FileUploader />
+                <input className="message-publisher-submit" type="submit" value="提交" />
+                <div className="clear"></div>
+            </form>
         );
     }
 });
@@ -59,9 +129,7 @@ var PublishMessageButton = React.createClass({
                         style={style}
                         title={<div>发布消息</div>}
                 >
-                    <input />
-                    <p>basic modal</p>
-                    <div style={{ height: 500 }}></div>
+                    <MessagePublisher />
                 </Dialog>
             );
         }
@@ -90,7 +158,7 @@ var MessageBox = React.createClass({
     displayName: 'MessageBox',
     render: function () {
         return (
-            <div className="messageBox">
+            <div className="message-box">
                 <PublishMessageButton />
                 <MessageList />
             </div>

@@ -1,0 +1,64 @@
+﻿.message-box .message-publisher-form .message-publisher-title {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    width: 550px;
+}
+
+.message-box .message-publisher-form .message-publisher-content {
+    resize: none;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    width: 550px;
+}
+
+.message-box .file-uploader-wrap div:nth-last-child(2) {
+    margin-bottom: 10px;
+}
+
+.message-box .file-wrapper:hover {
+    background-color: #dfdfdf;
+}
+
+.message-box .remove-file-button {
+    float: right;
+}
+
+.message-box .remove-file-button:after {
+    content: "删除";
+}
+
+.message-box input[type="file"] {
+    display: none;
+}
+
+.message-box .file-uploader-custom-file-upload
+{
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+.message-box .file-uploader-custom-file-upload:hover {
+    background-color: #dddddd;
+}
+
+.message-box .file-uploader-wrap {
+    margin-bottom: 10px;
+}
+
+.message-box .message-publisher-submit {
+    float: right;
+    background-color: white;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow:none;
+    border-radius: 0px;
+    border: 1px solid #ccc;
+    padding: 6px 12px;
+}
+
+.message-box .message-publisher-submit:hover {
+    background-color: #dddddd;
+}
