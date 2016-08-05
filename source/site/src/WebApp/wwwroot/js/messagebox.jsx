@@ -31,11 +31,15 @@
 
 var File = React.createClass({
     displayName: 'File',
+    handleRemoveFile: function(e)
+    {
+        this.props.onRemoveFile({name: this.props.fileName});
+    },
     render: function () {
         return (
             <div className="file-wrapper">
                 <a className="file-name" href={this.props.fileLink}>{this.props.fileName}</a>
-                <a className="remove-file-button" href="javascript:void(0)">
+                <a className="remove-file-button" href="javascript:void(0)" onClick={this.handleRemoveFile}>
                     <span className="remove-file-icon"></span>
                 </a>
             </div>
@@ -50,23 +54,46 @@ var FileUploader = React.createClass({
             data: []
         }
     },
-    onUploadFile: function(e) {
+    handleUploadFile: function(e) {
         if (this.refs.file.files.length == 1) {
             var currentfiles = this.state.data;
 
-            var file = this.refs.file.files[0];
+            var file = this.refs.file;
+            var fileName = file.files[0].name;
+            var filePath = file.value;
+
+            this.refs.file.value = '';
+
+            var existingFiles = $.grep(currentfiles, function (value) {
+                return value.path == filePath;
+            });
+
+            if (existingFiles.length > 0)
+            {
+                return;
+            }
+
             currentfiles.push({
-                name: file.name,
-                link: file.name
+                name: fileName,
+                path: filePath,
+                link: filePath
             })
 
             this.setState({ data: currentfiles });
         }
     },
+    handleRemoveFile: function(file) {
+        var currentfiles = this.state.data;
+        currentfiles = $.grep(currentfiles, function (value) {
+            return value.name != file.name;
+        });
+        this.setState({ data: currentfiles });
+    },
     render: function () {
+        var removeHandler = this.handleRemoveFile;
         var files = this.state.data.map(function(file) {
             return (
-                <File fileLink={file.link} fileName={file.name} />
+                <File fileLink={file.link} fileName={file.name} onRemoveFile={removeHandler} />
             );
         });
         return (
@@ -76,7 +103,7 @@ var FileUploader = React.createClass({
                     <label htmlFor="file-upload-control" className="file-uploader-custom-file-upload">
                         点这里上传文件
                     </label>
-                    <input id="file-upload-control" ref="file" type="file" name="uploadFile" className="file-uploader-choose-file" onChange={this.onUploadFile} />
+                    <input id="file-upload-control" ref="file" type="file" name="uploadFile" className="file-uploader-choose-file" onChange={this.handleUploadFile} />
                 </div>
             </div>
         );
