@@ -94,7 +94,7 @@ var FileUploader = React.createClass({
                 }.bind(this),
                 error: function () {
                     this.setState({ uploading: false });
-                    alert("上传文件错误！\r\n1. 文件可能太大了\r\n2. 服务器超时\r\n3. 其他原因");
+                    alert("上传文件错误！\r\n1. 文件可能太大了(最大50M)\r\n2. 服务器超时\r\n3. 其他原因");
                 }.bind(this)
             });
         }
