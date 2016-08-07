@@ -1,5 +1,6 @@
 ﻿namespace MyHomework.WebApp
 {
+    using Basic;
     using Configurations;
     using DatabaseModels;
     using Microsoft.AspNetCore.Builder;
@@ -44,6 +45,8 @@
             services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
 
             services.AddSingleton(typeof(WeChatApi));
+            services.AddSingleton(typeof(BlobStorageManager));
+
             // Add framework services.
             services.AddMvc();
             

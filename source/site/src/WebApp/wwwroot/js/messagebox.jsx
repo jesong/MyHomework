@@ -33,7 +33,7 @@ var File = React.createClass({
     displayName: 'File',
     handleRemoveFile: function(e)
     {
-        this.props.onRemoveFile({name: this.props.fileName});
+        this.props.onRemoveFile({ link: this.props.fileLink });
     },
     render: function () {
         return (
@@ -51,41 +51,58 @@ var FileUploader = React.createClass({
     displayName: 'FileUploader',
     getInitialState: function () {
         return {
-            data: []
+            data: [],
+            uploading: false,
         }
     },
     handleUploadFile: function(e) {
         if (this.refs.file.files.length == 1) {
             var currentfiles = this.state.data;
 
-            var file = this.refs.file;
-            var fileName = file.files[0].name;
-            var filePath = file.value;
-
-            this.refs.file.value = '';
+            var file = this.refs.file.files[0];
 
             var existingFiles = $.grep(currentfiles, function (value) {
-                return value.path == filePath;
+                return value.name == file.name;
             });
 
-            if (existingFiles.length > 0)
-            {
+            if (existingFiles.length > 0) {
+                alert("文件名已经存在，无法上传同名文件！");
+                this.refs.file.value = '';
                 return;
             }
 
-            currentfiles.push({
-                name: fileName,
-                path: filePath,
-                link: filePath
-            })
+            var data = new FormData();
+            data.append(file.name, file);
+            this.refs.file.value = '';
+            this.setState({ uploading: true });
 
-            this.setState({ data: currentfiles });
+            $.ajax({
+                type: "POST",
+                url: "/homeworkpublish/uploadfile",
+                contentType: false,
+                processData: false,
+                data: data,
+                timeout: 600000,
+                cache: false,
+                success: function (message) {
+                    currentfiles.push({
+                        name: message[0].fileName,
+                        link: message[0].url
+                    });
+
+                    this.setState({ data: currentfiles, uploading: false });
+                }.bind(this),
+                error: function () {
+                    this.setState({ uploading: false });
+                    alert("上传文件错误！\r\n1. 文件可能太大了\r\n2. 服务器超时\r\n3. 其他原因");
+                }.bind(this)
+            });
         }
     },
     handleRemoveFile: function(file) {
         var currentfiles = this.state.data;
         currentfiles = $.grep(currentfiles, function (value) {
-            return value.name != file.name;
+            return value.link != file.link;
         });
         this.setState({ data: currentfiles });
     },
@@ -101,9 +118,10 @@ var FileUploader = React.createClass({
                 {files}
                 <div className="file-uploader">
                     <label htmlFor="file-upload-control" className="file-uploader-custom-file-upload">
-                        点这里上传文件
+                        {this.state.uploading ? "努力上传文件中..." : "点这里上传文件"}
+                        
                     </label>
-                    <input id="file-upload-control" ref="file" type="file" name="uploadFile" className="file-uploader-choose-file" onChange={this.handleUploadFile} />
+                    <input id="file-upload-control" ref="file" type="file" name="uploadFile" className="file-uploader-choose-file" onChange={this.handleUploadFile}  disabled={this.state.uploading}/>
                 </div>
             </div>
         );
