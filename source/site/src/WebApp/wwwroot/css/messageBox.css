@@ -1,15 +1,25 @@
 ﻿.message-box .message-publisher-form .message-publisher-title {
     display: block;
     margin-bottom: 10px;
-    font-size: 1.2em;
+    font-size: 1em;
     width: 550px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: gray;
+    color: black;
+    font-family: inherit;
 }
 
 .message-box .message-publisher-form .message-publisher-content {
     resize: none;
     margin-bottom: 10px;
-    font-size: 1.2em;
+    font-size: 1em;
     width: 550px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: gray;
+    color: black;
+    font-family: inherit;
 }
 
 .message-box .file-uploader-wrap div:nth-last-child(2) {

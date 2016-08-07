@@ -1,12 +1,12 @@
 ﻿namespace MyHomework.WebApp.Controllers
 {
-    using Basic;
-    using DatabaseModels;
     using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Net.Http.Headers;
-    using Models;
+    using MyHomework.WebApp.Basic;
+    using MyHomework.WebApp.DatabaseModels;
+    using MyHomework.WebApp.Models;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -17,9 +17,9 @@
     {
         private MyHomeworkDBContext myHomeworkDBContext;
         private BlobStorageManager blobStorageManager;
-        public HomeworkPublishController(MyHomeworkDBContext context, BlobStorageManager blobStorageManager)
+        public HomeworkPublishController(MyHomeworkDBContext dbContext, BlobStorageManager blobStorageManager)
         {
-            this.myHomeworkDBContext = context;
+            this.myHomeworkDBContext = dbContext;
             this.blobStorageManager = blobStorageManager;
         }
 
@@ -40,7 +40,14 @@
         [HttpPost]
         public IActionResult AddHomework(Message message)
         {
-            return new JsonResult(null);
+            //TODO: change to correct user
+            message.CreatedBy = "super user";
+            message.CreatedDateTime = DateTime.UtcNow;
+
+            myHomeworkDBContext.Message.Add(message);
+            myHomeworkDBContext.SaveChanges();
+
+            return Ok();
         }
 
         [HttpPost]
@@ -61,7 +68,7 @@
                 resultList.Add(new { fileName = fileName, url = url.AbsoluteUri });
             }
 
-            return new JsonResult(resultList);
+            return Ok(resultList);
         }
     }
 }

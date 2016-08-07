@@ -7,6 +7,7 @@ namespace MyHomework.WebApp.DatabaseModels
     {
         public long AttachmentId { get; set; }
         public long MessageId { get; set; }
+        public string FileName { get; set; }
         public string StorageUrl { get; set; }
 
         public virtual Message Message { get; set; }

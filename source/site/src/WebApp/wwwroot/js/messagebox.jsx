@@ -75,6 +75,7 @@ var FileUploader = React.createClass({
             data.append(file.name, file);
             this.refs.file.value = '';
             this.setState({ uploading: true });
+            this.props.onUploading();
 
             $.ajax({
                 type: "POST",
@@ -91,9 +92,12 @@ var FileUploader = React.createClass({
                     });
 
                     this.setState({ data: currentfiles, uploading: false });
+
+                    this.props.onUploaded(currentfiles);
                 }.bind(this),
                 error: function () {
                     this.setState({ uploading: false });
+                    this.props.onUploaded(this.state.data);
                     alert("上传文件错误！\r\n1. 文件可能太大了(最大50M)\r\n2. 服务器超时\r\n3. 其他原因");
                 }.bind(this)
             });
@@ -105,6 +109,8 @@ var FileUploader = React.createClass({
             return value.link != file.link;
         });
         this.setState({ data: currentfiles });
+
+        this.props.updateFiles(currentfiles);
     },
     render: function () {
         var removeHandler = this.handleRemoveFile;
@@ -130,13 +136,73 @@ var FileUploader = React.createClass({
 
 var MessagePublisher = React.createClass({
     displayName: 'MessagePublisher',
+    getInitialState: function () {
+        return {
+            title: "",
+            content: "",
+            files: [],
+            uploading: false
+        }
+    },
+    handleTitleChange: function(e) {
+        this.setState({title: e.target.value});
+    },
+    handleContentChange: function (e) {
+        this.setState({ content: e.target.value });
+    },
+    handleFilesUploading: function () {
+        this.setState({ uploading: true });
+    },
+    handleFilesUploaded: function (files) {
+        this.setState({ files: files, uploading: false });
+    },
+    handleSubmit: function(e) {
+        e.preventDefault();
+        this.setState({ uploading: true });
+
+        var files = this.state.files.map(function (file) {
+            return {
+                FileName: file.name,
+                StorageUrl: file.link
+            };
+        });
+
+        var message = {
+            Title: this.state.title,
+            Content: this.state.content,
+            Attachment: files
+        }
+
+        $.ajax({
+            url: '/homeworkpublish/addhomework',
+            type: 'POST',
+            data: message,
+            cache: false,
+            timeout: 30000,
+            success: function (data) {
+                alert("success");
+                this.setState({ uploading: false });
+                this.props.onClose();
+            }.bind(this),
+            error: function (xhr, status, err) {
+                alert(status + "\r\n" + err.toString());
+                this.setState({ uploading: false });
+                this.props.onClose();
+            }.bind(this)
+        });
+    },
     render: function () {
+        var isDisabled = false;
+        if(this.state.uploading || (this.state.title==='' && this.state.content===''))
+        {
+            isDisabled = true;
+        }
         return (
-            <form className="message-publisher-form">
-                <input className="message-publisher-title" placeholder="标题" />
-                <textarea className="message-publisher-content" placeholder="内容" rows="10"/>
-                <FileUploader />
-                <input className="message-publisher-submit" type="submit" value="提交" />
+            <form className="message-publisher-form" onSubmit={this.handleSubmit}>
+                <input className="message-publisher-title" placeholder="标题" value={this.state.title} onChange={this.handleTitleChange}/>
+                <textarea className="message-publisher-content" placeholder="内容"  value={this.state.content} onChange={this.handleContentChange} rows="10"/>
+                <FileUploader onUploading={this.handleFilesUploading} onUploaded={this.handleFilesUploaded}/>
+                <input className="message-publisher-submit" type="submit" value="提交" disabled={isDisabled}/>
                 <div className="clear"></div>
             </form>
         );
@@ -174,7 +240,7 @@ var PublishMessageButton = React.createClass({
                         style={style}
                         title={<div>发布消息</div>}
                 >
-                    <MessagePublisher />
+                    <MessagePublisher onClose={this.onClose}/>
                 </Dialog>
             );
         }
