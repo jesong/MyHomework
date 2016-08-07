@@ -36,12 +36,19 @@ var File = React.createClass({
         this.props.onRemoveFile({ link: this.props.fileLink });
     },
     render: function () {
-        return (
-            <div className="file-wrapper">
-                <a className="file-name" href={this.props.fileLink}>{this.props.fileName}</a>
+        let fileRemove;
+        if (this.props.removeEnabled)
+        {
+            fileRemove = (
                 <a className="remove-file-button" href="javascript:void(0)" onClick={this.handleRemoveFile}>
                     <span className="remove-file-icon"></span>
                 </a>
+            );
+        }
+        return (
+            <div className="file-wrap">
+                <a className="file-name" href={this.props.fileLink}>{this.props.fileName}</a>
+                {fileRemove}
             </div>
         );
     }
@@ -116,7 +123,7 @@ var FileUploader = React.createClass({
         var removeHandler = this.handleRemoveFile;
         var files = this.state.data.map(function(file) {
             return (
-                <File fileLink={file.link} fileName={file.name} onRemoveFile={removeHandler} />
+                <File fileLink={file.link} fileName={file.name} onRemoveFile={removeHandler} removeEnabled={true} />
             );
         });
         return (
@@ -125,7 +132,6 @@ var FileUploader = React.createClass({
                 <div className="file-uploader">
                     <label htmlFor="file-upload-control" className="file-uploader-custom-file-upload">
                         {this.state.uploading ? "努力上传文件中..." : "点这里上传文件"}
-                        
                     </label>
                     <input id="file-upload-control" ref="file" type="file" name="uploadFile" className="file-uploader-choose-file" onChange={this.handleUploadFile}  disabled={this.state.uploading}/>
                 </div>
@@ -254,12 +260,83 @@ var PublishMessageButton = React.createClass({
     }
 });
 
+var Message = React.createClass({
+    render: function () {
+        var files = this.props.files.map(function (file) {
+            return (
+                <File fileLink={file.storageUrl} fileName={file.fileName} removeEnabled={false} />
+            );
+        });
+
+        var createdDateTime = $.formatDateTime('yy-mm-dd hh:ii', new Date(this.props.createdDateTime));
+        
+        return (
+            <li className="message-box-message">
+                <div className="message-box-message-header">
+                    <div className="message-box-message-title">
+                        {this.props.title}
+                    </div>
+                    <div className="message-box-message-createddatetime">
+                        {createdDateTime}
+                    </div>
+                    <div className="clear"></div>
+                </div>
+                <div className="message-box-message-body">
+                     <div className="message-box-message-content">
+                         <pre>
+                             {this.props.content}
+                         </pre>
+                     </div>
+                </div>
+                <div className="message-box-message-files">
+                        {files}
+                </div>
+            </li>
+        );
+    }
+});
+
 var MessageList = React.createClass({
     displayName: 'MessageList',
-    render: function() {
+    getInitialState: function() {
+        return {
+            messages: [],
+            isLoading: false
+        };
+    },
+    componentDidMount: function () {
+        this.setState({ isLoading: true });
+        $.ajax({
+            url: "/homeworkpublish/gethomeworks",
+            dataType: 'json',
+            cache: false,
+            timeout: 30000,
+            success: function (data) {
+                this.setState({ messages: data, isLoading: false });
+            }.bind(this),
+            error: function (xhr, status, err) {
+                alert(status + "\r\n" + err.toString())
+                this.setState({ isLoading: false });
+            }.bind(this)
+        });
+    },
+    render: function () {
+        let loadingText;
+        if (this.state.isLoading) {
+            loadingText = (<span>努力加载中...</span>);
+        }
+        var messages = this.state.messages.map(function (message) {
+            
+            return (
+                <Message title={message.title} content={message.content} createdDateTime={message.createdDateTime} files={message.attachment} />
+            );
+        });
         return (
             <div className="messageList">
-            Hello, world! I am a MessageList.
+                {loadingText}
+                <ul>
+                    {messages}
+                </ul>
             </div>
         );
     }

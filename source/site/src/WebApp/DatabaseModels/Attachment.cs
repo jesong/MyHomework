@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace MyHomework.WebApp.DatabaseModels
+﻿namespace MyHomework.WebApp.DatabaseModels
 {
+    using Newtonsoft.Json;
+
     public partial class Attachment
     {
         public long AttachmentId { get; set; }
@@ -10,6 +9,7 @@ namespace MyHomework.WebApp.DatabaseModels
         public string FileName { get; set; }
         public string StorageUrl { get; set; }
 
+        [JsonIgnore]
         public virtual Message Message { get; set; }
     }
 }

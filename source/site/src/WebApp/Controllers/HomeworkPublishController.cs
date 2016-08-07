@@ -2,6 +2,7 @@
 {
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Net.Http.Headers;
     using MyHomework.WebApp.Basic;
     using MyHomework.WebApp.DatabaseModels;
@@ -34,7 +35,8 @@
         [HttpGet]
         public IActionResult GetHomeworks()
         {
-            return new JsonResult(myHomeworkDBContext.Message.ToList());
+            var messages = myHomeworkDBContext.Message.Include(message=>message.Attachment).ToList();
+            return Ok(messages);
         }
 
         [HttpPost]
@@ -46,6 +48,8 @@
 
             myHomeworkDBContext.Message.Add(message);
             myHomeworkDBContext.SaveChanges();
+
+            //TODO: send message to wechat
 
             return Ok();
         }

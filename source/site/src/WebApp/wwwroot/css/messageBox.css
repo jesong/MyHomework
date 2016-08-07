@@ -1,4 +1,22 @@
-﻿.message-box .message-publisher-form .message-publisher-title {
+﻿.message-box ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.message-box ul li {
+    list-style-type: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+.message-box pre {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.message-box .message-publisher-form .message-publisher-title {
     display: block;
     margin-bottom: 10px;
     font-size: 1em;
@@ -26,7 +44,7 @@
     margin-bottom: 10px;
 }
 
-.message-box .file-wrapper:hover {
+.message-box .file-uploader-wrap .file-wrap:hover {
     background-color: #dfdfdf;
 }
 
@@ -71,4 +89,22 @@
 
 .message-box .message-publisher-submit:hover {
     background-color: #dddddd;
+}
+
+.message-box .message-box-message:nth-child(odd) {
+    background-color: #dddddd;
+}
+.message-box .message-box-message .message-box-message-title {
+    display: inline-block;
+    float: left;
+    font-weight: 500;
+}
+
+.message-box .message-box-message .message-box-message-createddatetime {
+    display: inline-block;
+    float: right;
+}
+
+.message-box .message-box-message .message-box-message-body {
+    display: block;
 }
