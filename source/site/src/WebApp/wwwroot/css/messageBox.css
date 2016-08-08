@@ -16,6 +16,20 @@
     white-space: pre-wrap;
 }
 
+.message-box .publish-message-botton {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+    margin-top: 20px;
+}
+
+.message-box .publish-message-botton:hover {
+    background-color: #dddddd;
+}
+
 .message-box .message-publisher-form .message-publisher-title {
     display: block;
     margin-bottom: 10px;
@@ -87,13 +101,19 @@
     padding: 6px 12px;
 }
 
+.message-box .message-list {
+    padding-top: 20px;
+}
+
+.message-box .message-box-message{
+    border-bottom: 1px solid #dddddd;
+    padding: 10px 0 10px 0
+}
+
 .message-box .message-publisher-submit:hover {
     background-color: #dddddd;
 }
 
-.message-box .message-box-message:nth-child(odd) {
-    background-color: #dddddd;
-}
 .message-box .message-box-message .message-box-message-title {
     display: inline-block;
     float: left;
@@ -107,4 +127,10 @@
 
 .message-box .message-box-message .message-box-message-body {
     display: block;
+}
+
+.message-box .message-box-message .message-box-message-files {
+    background-color: #eeeeee;
+    text-align: right;
+    padding-right: 20px;
 }

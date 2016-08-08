@@ -174,8 +174,8 @@ var MessagePublisher = React.createClass({
         });
 
         var message = {
-            Title: this.state.title,
-            Content: this.state.content,
+            Title: this.state.title === '' ? '(无标题)' : this.state.title,
+            Content: this.state.content === '' ? '(无内容)' : this.state.content,
             Attachment: files
         }
 
@@ -252,7 +252,7 @@ var PublishMessageButton = React.createClass({
         }
         return (
             <div>
-                <a className="publishMessageButton" onClick={this.handlePublishLinkClick} href="javascript:void(0)">发布消息</a>
+                <a className="publish-message-botton" onClick={this.handlePublishLinkClick} href="javascript:void(0)">发布消息</a>
                 {dialog}
             </div>
             
@@ -296,6 +296,21 @@ var Message = React.createClass({
     }
 });
 
+var Paging = React.createClass({
+    displayName: "Pagging",
+    render: function () {
+        return (
+            <div>
+                <span>1/12</span>
+                <a >首页</a>
+                <a>上一页</a>
+                <a>下一页</a>
+                <a>末页</a>
+            </div>
+        );
+    }
+});
+
 var MessageList = React.createClass({
     displayName: 'MessageList',
     getInitialState: function() {
@@ -332,11 +347,13 @@ var MessageList = React.createClass({
             );
         });
         return (
-            <div className="messageList">
+            <div className="message-list">
                 {loadingText}
                 <ul>
                     {messages}
                 </ul>
+
+                <Paging />
             </div>
         );
     }
