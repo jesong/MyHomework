@@ -198,5 +198,92 @@
         }
         #endregion UserInfo
 
+        #region Message
+        public async Task SendMessage(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                throw new Exception("Invalid text in SendMessage: " + text);
+            }
+
+            var msg = new
+            {
+                touser = "@all",
+                msgtype = "text",
+                agentid = this.options.WeChatOptions.HomeworkPublishTargetAgentId,
+                text = new
+                {
+                    content = text
+                }
+            };
+
+            await this.SendMessageInternal(msg);
+        }
+
+        public async Task SendMessage(string title, string description, Uri url, Uri picUrl)
+        {
+            if (string.IsNullOrWhiteSpace(title) &&
+                string.IsNullOrWhiteSpace(description) &&
+                url == null &&
+                picUrl == null)
+            {
+                throw new Exception(string.Format("Invalid argument in SendMessage: {0}, {1}, {2}, {3}",
+                    title, description, url, picUrl));
+            }
+            
+            var msg = new
+            {
+                touser = "@all",
+                msgtype = "news",
+                agentid = this.options.WeChatOptions.HomeworkPublishTargetAgentId,
+                news = new
+                {
+                    articles = new dynamic[] {
+                        new {
+                            title = title,
+                            description = description,
+                            url = url == null ? null : url.AbsoluteUri,
+                            picurl = picUrl == null ? null : picUrl.AbsoluteUri
+                        }
+                    }
+                }
+            };
+
+            await this.SendMessageInternal(msg);
+        }
+
+        private async Task SendMessageInternal(object msg)
+        {
+            if (msg == null)
+            {
+                throw new Exception("Invalid msg in SendMessageInternal.");
+            }
+
+            var uri = string.Format("https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={0}",
+                (await this.GetAccessTokenAsync()).Token);
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, uri);
+
+            request.Content = new StringContent(
+                JsonConvert.SerializeObject(msg),
+                Encoding.UTF8, "application/json");
+
+            var response = await client.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Wechat server error in SendMessage: " + response.StatusCode);
+            }
+
+            var responseString = await response.Content.ReadAsStringAsync();
+            var jMessageReply = JObject.Parse(responseString);
+
+            var errorCode = jMessageReply["errcode"].Value<int>();
+            if (errorCode != 0)
+            {
+                throw new Exception("Wechat server error in SendMessage: " + errorCode);
+            }
+        }
+        #endregion
     }
 }

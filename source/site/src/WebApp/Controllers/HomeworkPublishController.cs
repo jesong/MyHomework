@@ -11,6 +11,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using WeChat;
 
     [AllowAnonymous]
     //[Authorize(Policy = Globals.AuthorizePolicyMember)]
@@ -18,10 +19,13 @@
     {
         private MyHomeworkDBContext myHomeworkDBContext;
         private BlobStorageManager blobStorageManager;
-        public HomeworkPublishController(MyHomeworkDBContext dbContext, BlobStorageManager blobStorageManager)
+        private WeChatApi wechatApi;
+
+        public HomeworkPublishController(MyHomeworkDBContext dbContext, BlobStorageManager blobStorageManager, WeChatApi wechatApi)
         {
             this.myHomeworkDBContext = dbContext;
             this.blobStorageManager = blobStorageManager;
+            this.wechatApi = wechatApi;
         }
 
         [HttpGet]
@@ -35,21 +39,23 @@
         [HttpGet]
         public IActionResult GetHomeworks()
         {
-            var messages = myHomeworkDBContext.Message.Include(message=>message.Attachment).ToList();
+            var messages = myHomeworkDBContext.Message.Include(message=>message.Attachment).
+                OrderByDescending(message=>message.CreatedDateTime).ToList();
             return Ok(messages);
         }
 
         [HttpPost]
-        public IActionResult AddHomework(Message message)
+        public async Task<IActionResult> AddHomework(Message message)
         {
             //TODO: change to correct user
             message.CreatedBy = "super user";
             message.CreatedDateTime = DateTime.UtcNow;
 
-            myHomeworkDBContext.Message.Add(message);
-            myHomeworkDBContext.SaveChanges();
+            //myHomeworkDBContext.Message.Add(message);
+            //myHomeworkDBContext.SaveChanges();
 
-            //TODO: send message to wechat
+            await wechatApi.SendMessage("有一条新作业", "有一条新作业发布了",
+                new Uri("https://myhomeworkweb.azurewebsites.net/homeworkpublish/index"), null);
 
             return Ok();
         }
