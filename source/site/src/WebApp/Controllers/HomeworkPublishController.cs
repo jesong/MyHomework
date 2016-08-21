@@ -51,8 +51,8 @@
             message.CreatedBy = "super user";
             message.CreatedDateTime = DateTime.UtcNow;
 
-            //myHomeworkDBContext.Message.Add(message);
-            //myHomeworkDBContext.SaveChanges();
+            myHomeworkDBContext.Message.Add(message);
+            myHomeworkDBContext.SaveChanges();
 
             await wechatApi.SendMessage("有一条新作业", "有一条新作业发布了",
                 new Uri("https://myhomeworkweb.azurewebsites.net/homeworkpublish/index"), null);
